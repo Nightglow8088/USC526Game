@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MagnetController : MonoBehaviour
 {
-    private Vector3 startPosition;
+    public Vector3 startPosition;
     public float speed = 1.0f;
 
     void OnCollisionEnter(Collision collision)
