@@ -4,5 +4,17 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Liqian/Menu.unity
+    guid: d85052404c02543fd9f543f4d2746faf
+  - enabled: 1
+    path: Assets/Liqian/Level1.unity
+    guid: acba3e9f707a343bea5ea10f653d3833
+  - enabled: 1
+    path: Assets/Liqian/Level2.unity
+    guid: bfea1b85a5f0f412d932240535dec164
+  - enabled: 1
+    path: Assets/Liqian/Level3.unity
+    guid: 6c1a14350877f4f27b4612915cd97848
   m_configObjects: {}
