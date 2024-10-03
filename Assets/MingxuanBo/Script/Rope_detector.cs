@@ -1,10 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Rope_detector : MonoBehaviour
 {
-
     public Transform cylinder; // 圆柱体的位置
     private GameObject firstDetectedItem = null; // 保存最先检测到的物体
     private GameObject currentAttachedItem = null; // 当前吸附的物体
@@ -42,20 +40,7 @@ public class Rope_detector : MonoBehaviour
     {
         // 圆柱体底部位置（根据当前圆柱体的实时位置）
         float fullHeight = cylinder.localScale.y;
-        return cylinder.position - new Vector3(0, fullHeight, 0);
-    }
-
-    // 动态获取 Cube 的顶部位置
-    private Vector3 GetCubeTopPosition(GameObject item)
-    {
-        // 获取 Cube 的 Collider
-        Collider cubeCollider = item.GetComponent<Collider>();
-        if (cubeCollider != null)
-        {
-            // 返回 Cube 顶部的位置（物体的顶部为它的中心点加上其高度的一半）
-            return item.transform.position + new Vector3(0, cubeCollider.bounds.extents.y, 0);
-        }
-        return item.transform.position;
+        return cylinder.position - new Vector3(0, fullHeight / 2, 0); // 修正: 使用高度的一半，确保底部对齐
     }
 
     // 当有物体进入 trigger 时触发
@@ -94,17 +79,22 @@ public class Rope_detector : MonoBehaviour
             itemRb.isKinematic = true; // 设为 Kinematic，确保物体不会影响物理系统
         }
 
+        // 获取物体的 Collider 大小
+        Collider itemCollider = item.GetComponent<Collider>();
+        float itemHeight = 0f;
+        if (itemCollider != null)
+        {
+            itemHeight = itemCollider.bounds.size.y; // 获取物体的高度
+        }
+
         // 吸附过程
         while (item != null)
         {
             // 获取圆柱体当前底部位置
             Vector3 bottomPosition = GetCylinderBottomPosition();
 
-            // 获取 Cube 顶部位置
-            Vector3 cubeTopPosition = GetCubeTopPosition(item);
-
-            // 计算物体吸附到圆柱体底端外侧的位置，确保顶部对齐
-            Vector3 targetPosition = item.transform.position + (bottomPosition - cubeTopPosition);
+            // 计算吸附点：将物体的底部对齐到圆柱体的底部                 原本是itemHeight / 2
+            Vector3 targetPosition = bottomPosition - new Vector3(0, itemHeight  + 0.05f, 0); // 修正：确保物体底部对齐到圆柱体底部
 
             // 逐步移动物体到圆柱体底端外侧
             item.transform.position = Vector3.MoveTowards(item.transform.position, targetPosition, speed * Time.deltaTime);
@@ -145,6 +135,3 @@ public class Rope_detector : MonoBehaviour
         }
     }
 }
-
-
-
