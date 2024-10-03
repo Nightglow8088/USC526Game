@@ -1,8 +1,10 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class NewCollition : MonoBehaviour
+public class collisionBackup : MonoBehaviour
 {
+
     public GameObject currentObject; // 最新的重生点
     public GameObject parent; // 整个最上层的父物体 (version2)
     private SpringJoint springJoint; // 圆柱体的 Spring Joint
@@ -85,9 +87,6 @@ public class NewCollition : MonoBehaviour
 
         // 在一定时间后恢复物理属性
         StartCoroutine(StopSwingingAndReconnectSpringJoint());
-
-        Physics.SyncTransforms();
-
     }
 
     // 逐步恢复物理状态，并重新连接 Spring Joint
