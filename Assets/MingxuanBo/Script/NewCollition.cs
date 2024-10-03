@@ -67,7 +67,9 @@ public class NewCollition : MonoBehaviour
         parent.transform.rotation = currentObject.transform.rotation;
 
         // 保持圆柱体直立（只调整圆柱体的 X 和 Z 轴的旋转）
-        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0); // 保持 Y 轴旋转，重置 X 和 Z 轴
+        //transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0); // 保持 Y 轴旋转，重置 X 和 Z 轴
+        transform.rotation = Quaternion.Euler(0, 0, 0); // 重置 所有轴
+
 
         // 重置 connectedRigiBody 的旋转为 (0, 0, 0)
         if (originalConnectedBody != null)
@@ -83,6 +85,9 @@ public class NewCollition : MonoBehaviour
 
         // 在一定时间后恢复物理属性
         StartCoroutine(StopSwingingAndReconnectSpringJoint());
+
+        Physics.SyncTransforms();
+
     }
 
     // 逐步恢复物理状态，并重新连接 Spring Joint
@@ -96,7 +101,7 @@ public class NewCollition : MonoBehaviour
         if (rb != null)
         {
             rb.isKinematic = false; // 恢复物理运动
-            rb.angularVelocity = Vector3.zero; // 确保角速度为零，停止任何摇摆
+            //rb.angularVelocity = Vector3.zero; // 确保角速度为零，停止任何摇摆
         }
 
         // 重新连接 Spring Joint
@@ -105,8 +110,8 @@ public class NewCollition : MonoBehaviour
             originalConnectedBody.isKinematic = false;
 
             // 调低 SpringJoint 的弹性参数，防止抖动
-            springJoint.spring = 5f;  // 根据实际情况调整 spring 参数
-            springJoint.damper = 1f;  // 减小阻尼，减少弹性
+            //springJoint.spring = 100f;  // 根据实际情况调整 spring 参数
+            //springJoint.damper = 19f;  // 减小阻尼，减少弹性
 
             springJoint.connectedBody = originalConnectedBody; // 重新连接 Spring Joint
             Debug.Log("Spring Joint reconnected");
