@@ -9,6 +9,7 @@ public class RailCollision : MonoBehaviour
     public Vector3 cubeStartPosition;
 
     public GameObject ball;
+    public GameObject magnetCollider;
     public GameObject cube;
 
     public void StopMovement(GameObject otherObject)
@@ -33,6 +34,7 @@ public class RailCollision : MonoBehaviour
         cube.transform.position = cubeStartPosition;
         cube.transform.rotation = Quaternion.identity;  // Reset rotation to zero
 
+        StopMovement(ball);  // Stop movement of the ball
         // Reset its velocity if it's a Rigidbody
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
@@ -41,7 +43,8 @@ public class RailCollision : MonoBehaviour
             rb.angularVelocity = Vector3.zero;  // Stop rotation
         }
 
-        StopMovement(ball);  // Stop movement of the ball
+        
+        StopMovement(magnetCollider);  // Stop movement of the magnet collider
     }
 
 

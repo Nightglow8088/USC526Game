@@ -1,45 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Scripting.APIUpdating;
 
 public class final : MonoBehaviour
 {
-    public GameObject checkPoint; // ×îÐÂµÄÖØÉúµã
+    public GameObject checkPoint; // ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public GameObject ball;
+    public GameObject magnetCollider;
+    public GameObject targetItem;
 
 
 
-    // ¼ì²âÓë "tube" µÄÅö×²ÊÂ¼þ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ "tube" ï¿½ï¿½ï¿½ï¿½×²ï¿½Â¼ï¿½
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("tube")) // Èç¹ûÅö×²µÄ¶ÔÏóÓÐ "tube" ±êÇ©
+        if (collision.gameObject.CompareTag("tube")) // ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½ "tube" ï¿½ï¿½Ç©
         {
             Debug.Log("Tube Collision Detected, Returning to checkpoint");
             TeleportToCheckpoint();
         }
     }
 
-    // ¼ì²â savePoint µÄ´¥·¢Æ÷ÊÂ¼þ
+    // ï¿½ï¿½ï¿½ savePoint ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("savePoint")) // Èç¹ûÅö×²µÄ¶ÔÏóÓÐ "savePoint" ±êÇ©
+        if (other.CompareTag("savePoint")) // ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½ "savePoint" ï¿½ï¿½Ç©
         {
             Debug.Log("Save Point Reached, updating checkpoint.");
-            checkPoint = other.gameObject; // ¸üÐÂ currentObject ÎªÐÂµÄ´æµµµã
+            checkPoint = other.gameObject; // ï¿½ï¿½ï¿½ï¿½ currentObject Îªï¿½ÂµÄ´æµµï¿½ï¿½
         }
     }
 
     private void TeleportToCheckpoint(){
         ball.transform.position = checkPoint.transform.position;
+        ball.transform.rotation = Quaternion.identity;  // Reset rotation to zero
+
+        StopMovement(ball);  // Stop movement of the ball
+        transform.rotation = Quaternion.identity;  // Reset rotation to zero
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.velocity = Vector3.zero;  // Stop all movement
             rb.angularVelocity = Vector3.zero;  // Stop rotation
+
         }
 
-        StopMovement(ball);  // Stop movement of the ball
-
+        
+        StopMovement(magnetCollider);  // Stop movement of the magnet collider
+        StopMovement(targetItem);  // Stop movement of the target item
     }
 
 
@@ -49,9 +58,19 @@ public class final : MonoBehaviour
         Rigidbody rb = otherObject.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            // Stop all movement and rotation
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
+            if (rb.isKinematic)
+            {
+                rb.isKinematic = false;
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.isKinematic = true;
+                //rb.MoveRotation(Quaternion.identity);
+            }
+            else 
+            {
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
         }
     }
 

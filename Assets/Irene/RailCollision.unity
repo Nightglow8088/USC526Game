@@ -122,6 +122,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &178804521 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7744821021277183473, guid: 126a775ccccaba547854a4701db0a3e6, type: 3}
+  m_PrefabInstance: {fileID: 7454762261278879592}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &329254991
 GameObject:
   m_ObjectHideFlags: 0
@@ -765,6 +770,10 @@ PrefabInstance:
       propertyPath: cube
       value: 
       objectReference: {fileID: 546427125}
+    - target: {fileID: 17542618110347465, guid: 126a775ccccaba547854a4701db0a3e6, type: 3}
+      propertyPath: magnetCollider
+      value: 
+      objectReference: {fileID: 178804521}
     - target: {fileID: 899351875429098892, guid: 126a775ccccaba547854a4701db0a3e6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -805,9 +814,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1189902683633672676, guid: 126a775ccccaba547854a4701db0a3e6, type: 3}
+      propertyPath: m_Drag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1189902683633672676, guid: 126a775ccccaba547854a4701db0a3e6, type: 3}
+      propertyPath: m_Mass
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3309889689399050834, guid: 126a775ccccaba547854a4701db0a3e6, type: 3}
       propertyPath: m_Name
       value: player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5546169028577867441, guid: 126a775ccccaba547854a4701db0a3e6, type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
