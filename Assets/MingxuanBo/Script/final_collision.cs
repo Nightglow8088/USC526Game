@@ -35,7 +35,6 @@ public class final : MonoBehaviour
     private void TeleportToCheckpoint(){
         ball.transform.position = checkPoint.transform.position;
         ball.transform.rotation = Quaternion.identity;  // Reset rotation to zero
-
         
         //transform.rotation = Quaternion.identity;  // Reset rotation to zero
 
