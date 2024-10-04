@@ -36,8 +36,10 @@ public class final : MonoBehaviour
         ball.transform.position = checkPoint.transform.position;
         ball.transform.rotation = Quaternion.identity;  // Reset rotation to zero
 
-        StopMovement(ball);  // Stop movement of the ball
-        transform.rotation = Quaternion.identity;  // Reset rotation to zero
+        
+        //transform.rotation = Quaternion.identity;  // Reset rotation to zero
+
+        /*
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
         {
@@ -45,8 +47,9 @@ public class final : MonoBehaviour
             rb.angularVelocity = Vector3.zero;  // Stop rotation
 
         }
+        */
 
-        
+        StopMovement(ball);  // Stop movement of the ball
         StopMovement(magnetCollider);  // Stop movement of the magnet collider
         StopMovement(targetItem);  // Stop movement of the target item
     }
@@ -60,11 +63,13 @@ public class final : MonoBehaviour
         {
             if (rb.isKinematic)
             {
+                /*
                 rb.isKinematic = false;
                 rb.velocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
                 rb.isKinematic = true;
-                //rb.MoveRotation(Quaternion.identity);
+                */
+                rb.MoveRotation(Quaternion.identity);
             }
             else 
             {
