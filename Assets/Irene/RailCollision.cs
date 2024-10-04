@@ -6,8 +6,10 @@ public class RailCollision : MonoBehaviour
 {
     public Vector3 jointStartPosition;
     public Vector3 ballStartPosition;
+    public Vector3 cubeStartPosition;
 
     public GameObject ball;
+    public GameObject cube;
 
     public void StopMovement(GameObject otherObject)
     {
@@ -23,9 +25,13 @@ public class RailCollision : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        cube.transform.SetParent(null);  // Unparent the cube from the joint
+
         // Reset object back to start position
         transform.position = jointStartPosition;
         ball.transform.position = ballStartPosition;
+        cube.transform.position = cubeStartPosition;
+        cube.transform.rotation = Quaternion.identity;  // Reset rotation to zero
 
         // Reset its velocity if it's a Rigidbody
         Rigidbody rb = GetComponent<Rigidbody>();
@@ -35,9 +41,9 @@ public class RailCollision : MonoBehaviour
             rb.angularVelocity = Vector3.zero;  // Stop rotation
         }
 
-        StopMovement(ball);  // Stop movement of the current object
-
+        StopMovement(ball);  // Stop movement of the ball
     }
+
 
 
     // Start is called before the first frame update
@@ -45,6 +51,7 @@ public class RailCollision : MonoBehaviour
     {
         jointStartPosition = transform.position;
         ballStartPosition = ball.transform.position;
+        cubeStartPosition = cube.transform.position;
     }
 
     // Update is called once per frame
