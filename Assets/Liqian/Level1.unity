@@ -1501,6 +1501,14 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1189902683633672676, guid: 126a775ccccaba547854a4701db0a3e6, type: 3}
+      propertyPath: m_Drag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1189902683633672676, guid: 126a775ccccaba547854a4701db0a3e6, type: 3}
+      propertyPath: m_Mass
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3309889689399050834, guid: 126a775ccccaba547854a4701db0a3e6, type: 3}
       propertyPath: m_Name
       value: player
@@ -1543,7 +1551,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f1992f9d98d62147a893b5f941e855d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 8
   verticalSpeed: 4
 --- !u!1 &717016076
 GameObject:
