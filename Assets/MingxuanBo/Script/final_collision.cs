@@ -1,19 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Scripting.APIUpdating;
 
 public class final : MonoBehaviour
 {
-    public GameObject checkPoint; // ×îÐÂµÄÖØÉúµã
+    public GameObject checkPoint; // ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public GameObject ball;
-    public GameObject joint;
-    public GameObject magnent;
+    public GameObject magnetCollider;
+    public GameObject targetItem;
 
 
-    // ¼ì²âÓë "tube" µÄÅö×²ÊÂ¼þ
+
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ "tube" ï¿½ï¿½ï¿½ï¿½×²ï¿½Â¼ï¿½
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("tube")) // Èç¹ûÅö×²µÄ¶ÔÏóÓÐ "tube" ±êÇ©
+        if (collision.gameObject.CompareTag("tube")) // ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½ "tube" ï¿½ï¿½Ç©
         {
             HideObjectAndChildren(joint);
             HideObjectAndChildren(magnent);
@@ -28,69 +30,57 @@ public class final : MonoBehaviour
         }
     }
 
-    IEnumerator ShowHiddenAfterDelay()
-    {
-        // µÈ´ýÒ»Ãë
-        yield return new WaitForSeconds(0.6f);
-
-        // Ò»ÃëºóÏÔÊ¾¶ÔÏóºÍÆä×Ó¶ÔÏó
-        ShowObjectAndChildren(joint);
-        ShowObjectAndChildren(magnent);
-    }
-
-
-
-
-    // ¼ì²â savePoint µÄ´¥·¢Æ÷ÊÂ¼þ
+    // ï¿½ï¿½ï¿½ savePoint ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("savePoint")) // Èç¹ûÅö×²µÄ¶ÔÏóÓÐ "savePoint" ±êÇ©
+        if (other.CompareTag("savePoint")) // ï¿½ï¿½ï¿½ï¿½ï¿½×²ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½ "savePoint" ï¿½ï¿½Ç©
         {
             Debug.Log("Save Point Reached, updating checkpoint.");
-            checkPoint = other.gameObject; // ¸üÐÂ currentObject ÎªÐÂµÄ´æµµµã
+            checkPoint = other.gameObject; // ï¿½ï¿½ï¿½ï¿½ currentObject Îªï¿½ÂµÄ´æµµï¿½ï¿½
         }
     }
 
     private void TeleportToCheckpoint(){
         ball.transform.position = checkPoint.transform.position;
-        //parent.transform.position = checkPoint.transform.position;
+        ball.transform.rotation = Quaternion.identity;  // Reset rotation to zero
+        
+        //transform.rotation = Quaternion.identity;  // Reset rotation to zero
 
-        foreach (Transform child in ball.transform)
+        /*
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
         {
-            // ¼ì²é×Ó¶ÔÏóÊÇ·ñÓÐ Rigidbody ×é¼þ
-            Rigidbody rb = child.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                // ¼ì²é×Ó¶ÔÏóµÄÃû×ÖÊÇ·ñÊÇ "ball"£¬Èç¹ûÊÇÔòÌø¹ý
-                if (child.name == "ball")
-                {
-                    continue;  // Ìø¹ý ball
-                }
-                // Í£Ö¹ËùÓÐµÄÒÆ¶¯ºÍÐý×ª
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-            }
+            rb.velocity = Vector3.zero;  // Stop all movement
+            rb.angularVelocity = Vector3.zero;  // Stop rotation
+
         }
+        */
 
-
+        StopMovement(ball);  // Stop movement of the ball
+        StopMovement(magnetCollider);  // Stop movement of the magnet collider
+        StopMovement(targetItem);  // Stop movement of the target item
     }
 
     public void HideObjectAndChildren(GameObject parentObject)
     {
-        // ÏÈÒþ²Ø¸¸¶ÔÏóµÄ MeshRenderer
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MeshRenderer
         MeshRenderer parentMeshRenderer = parentObject.GetComponent<MeshRenderer>();
         if (parentMeshRenderer != null)
         {
-            parentMeshRenderer.enabled = false;
-        }
-
-        // ±éÀú¸¸¶ÔÏóµÄËùÓÐ×Ó¶ÔÏó²¢Òþ²ØËüÃÇµÄ MeshRenderer
-        foreach (Transform child in parentObject.transform)
-        {
-            MeshRenderer childMeshRenderer = child.GetComponent<MeshRenderer>();
-            if (childMeshRenderer != null)
+            if (rb.isKinematic)
             {
-                childMeshRenderer.enabled = false;
+                /*
+                rb.isKinematic = false;
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.isKinematic = true;
+                */
+                rb.MoveRotation(Quaternion.identity);
+            }
+            else 
+            {
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
             }
         }
     }
@@ -98,14 +88,14 @@ public class final : MonoBehaviour
 
     public void ShowObjectAndChildren(GameObject parentObject)
     {
-        // ÏÈÒþ²Ø¸¸¶ÔÏóµÄ MeshRenderer
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ MeshRenderer
         MeshRenderer parentMeshRenderer = parentObject.GetComponent<MeshRenderer>();
         if (parentMeshRenderer != null)
         {
             parentMeshRenderer.enabled = true;
         }
 
-        // ±éÀú¸¸¶ÔÏóµÄËùÓÐ×Ó¶ÔÏó²¢Òþ²ØËüÃÇµÄ MeshRenderer
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ MeshRenderer
         foreach (Transform child in parentObject.transform)
         {
             MeshRenderer childMeshRenderer = child.GetComponent<MeshRenderer>();
