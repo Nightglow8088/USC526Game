@@ -7,6 +7,8 @@ public class controller : MonoBehaviour
     public float moveSpeed;  // 移动速度
     public float verticalSpeed;  // 上下移动速度
 
+
+
     void Update()
     {
         // 获取 WASD 按键的输入
@@ -49,5 +51,7 @@ public class controller : MonoBehaviour
 
         // 应用移动
         transform.Translate(movement);
+
+
     }
 }
