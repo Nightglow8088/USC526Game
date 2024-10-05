@@ -9,6 +9,15 @@ public class controller : MonoBehaviour
     public float verticalSpeed;  // 上下移动速度
     private bool canMoveUp = true;  // 控制是否可以继续向上移动
 
+    public Canvas hitCanvas;  // 引入画布
+
+    private void Start()
+    {
+        hitCanvas.gameObject.SetActive(false);
+
+    }
+
+
     void Update()
     {
         // 获取 WASD 按键的输入
@@ -62,6 +71,8 @@ public class controller : MonoBehaviour
     {
         if (other.CompareTag("TestCube"))
         {
+            hitCanvas.gameObject.SetActive(true);
+
             canMoveUp = false;  // 碰到 "testitem" 时停止向上移动
         }
     }
@@ -71,6 +82,8 @@ public class controller : MonoBehaviour
     {
         if (other.CompareTag("TestCube"))
         {
+            hitCanvas.gameObject.SetActive(false);
+
             canMoveUp = true;  // 离开 "testitem" 时恢复向上移动
         }
     }
