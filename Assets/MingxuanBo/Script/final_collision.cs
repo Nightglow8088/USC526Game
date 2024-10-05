@@ -5,26 +5,96 @@ using UnityEngine.Scripting.APIUpdating;
 
 public class final : MonoBehaviour
 {
-    public GameObject checkPoint; // ���µ�������
+    public Vector3 jointStartPosition;
+    public Vector3 ballStartPosition;
+    public Vector3 magnentStartPosition;
+
+
+    public GameObject checkPoint; 
     public GameObject ball;
     public GameObject magnetCollider;
-    public GameObject targetItem;
+    public GameObject joint;
+
+    //public GameObject targetItem;
+    public GameObject nextPosition;
+
+
+    //public float stopTime = 1.0f;  // Time to stop movement after collision
+
+
+    void Start()
+    {
+        jointStartPosition = joint.transform.position;
+        ballStartPosition = ball.transform.position;
+        magnentStartPosition = magnetCollider.transform.position;
+    }
+
+    public void freezerTool(GameObject currentObject, Vector3 position)
+    {
+        currentObject.transform.position = position;
+        currentObject.transform.rotation = Quaternion.identity;  // Reset rotation to zero
+
+        Rigidbody currentRB= currentObject.GetComponent<Rigidbody>();
+        currentRB.constraints = RigidbodyConstraints.FreezeAll;  // Freeze all movement and rotation
+
+        currentRB.velocity = Vector3.zero;  // Stop all movement
+        currentRB.angularVelocity = Vector3.zero;  // Stop rotation
+
+
+    }
+
+    public void UnFreezeerTool(GameObject currentObject)
+    {
+
+        Rigidbody currentRB = currentObject.GetComponent<Rigidbody>();
+        currentRB.constraints = RigidbodyConstraints.None;  // Unfreeze all movement and rotation
+
+    }
 
 
 
     // ����� "tube" ����ײ�¼�
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("tube")) // �����ײ�Ķ����� "tube" ��ǩ
+        if (collision.gameObject.CompareTag("tube")) 
         {
-            HideObjectAndChildren(joint);
-            HideObjectAndChildren(magnent);
 
             Debug.Log("Tube Collision Detected, Returning to checkpoint");
-            TeleportToCheckpoint();
+            freezerTool(ball,ballStartPosition);
+            freezerTool(magnetCollider, magnentStartPosition);
+            freezerTool(gameObject, jointStartPosition);
 
-            StartCoroutine(ShowHiddenAfterDelay());
+            //transform.position = jointStartPosition;
+            //transform.rotation = Quaternion.identity;  // Reset rotation to zero
+            //ball.transform.position = ballStartPosition;
+            //ball.transform.rotation = Quaternion.identity;  // Reset rotation to zero
+            //magnetCollider.transform.position = magnentStartPosition;
+            //magnetCollider.transform.rotation = Quaternion.identity;  // Reset rotation to zero
 
+
+            //// Reset its velocity if it's a Rigidbody
+            //Rigidbody rb = GetComponent<Rigidbody>();
+            //Rigidbody magnentRb = magnetCollider.GetComponent<Rigidbody>();
+
+            //rb.constraints = RigidbodyConstraints.FreezeAll;  // Freeze all movement and rotation
+            //magnentRb.constraints = RigidbodyConstraints.FreezeAll;  // Freeze all movement and rotation
+
+
+            //rb.velocity = Vector3.zero;  // Stop all movement
+            //rb.angularVelocity = Vector3.zero;  // Stop rotation
+            //magnentRb.velocity = Vector3.zero;  // Stop all movement
+            //magnentRb.angularVelocity = Vector3.zero;  // Stop rotation
+
+
+            // Wait for the specified stop time
+            //yield return new WaitForSeconds(stopTime);
+
+            UnFreezeerTool(ball);
+            UnFreezeerTool(magnetCollider);
+            UnFreezeerTool(gameObject);
+
+            //rb.constraints = RigidbodyConstraints.None;  // Unfreeze all movement and rotation
+            //magnentRb.constraints = RigidbodyConstraints.None;  // Unfreeze all movement and rotation
 
 
         }
@@ -36,75 +106,13 @@ public class final : MonoBehaviour
         if (other.CompareTag("savePoint")) // �����ײ�Ķ����� "savePoint" ��ǩ
         {
             Debug.Log("Save Point Reached, updating checkpoint.");
-            checkPoint = other.gameObject; // ���� currentObject Ϊ�µĴ浵��
+            jointStartPosition = nextPosition.transform.Find("Joint").transform.position;
+            ballStartPosition = nextPosition.transform.Find("Ball").transform.position;
+            magnentStartPosition = nextPosition.transform.Find("Magnet Collider").transform.position;
+
         }
     }
 
-    private void TeleportToCheckpoint(){
-        ball.transform.position = checkPoint.transform.position;
-        ball.transform.rotation = Quaternion.identity;  // Reset rotation to zero
-        
-        //transform.rotation = Quaternion.identity;  // Reset rotation to zero
-
-        /*
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.velocity = Vector3.zero;  // Stop all movement
-            rb.angularVelocity = Vector3.zero;  // Stop rotation
-
-        }
-        */
-
-        StopMovement(ball);  // Stop movement of the ball
-        StopMovement(magnetCollider);  // Stop movement of the magnet collider
-        StopMovement(targetItem);  // Stop movement of the target item
-    }
-
-    public void HideObjectAndChildren(GameObject parentObject)
-    {
-        // �����ظ������ MeshRenderer
-        MeshRenderer parentMeshRenderer = parentObject.GetComponent<MeshRenderer>();
-        if (parentMeshRenderer != null)
-        {
-            if (rb.isKinematic)
-            {
-                /*
-                rb.isKinematic = false;
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-                rb.isKinematic = true;
-                */
-                rb.MoveRotation(Quaternion.identity);
-            }
-            else 
-            {
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-            }
-        }
-    }
-
-
-    public void ShowObjectAndChildren(GameObject parentObject)
-    {
-        // �����ظ������ MeshRenderer
-        MeshRenderer parentMeshRenderer = parentObject.GetComponent<MeshRenderer>();
-        if (parentMeshRenderer != null)
-        {
-            parentMeshRenderer.enabled = true;
-        }
-
-        // ����������������Ӷ����������ǵ� MeshRenderer
-        foreach (Transform child in parentObject.transform)
-        {
-            MeshRenderer childMeshRenderer = child.GetComponent<MeshRenderer>();
-            if (childMeshRenderer != null)
-            {
-                childMeshRenderer.enabled = true;
-            }
-        }
-    }
 
 
 

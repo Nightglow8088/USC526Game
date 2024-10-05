@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class controller : MonoBehaviour
 {
     public float moveSpeed;  // 移动速度
     public float verticalSpeed;  // 上下移动速度
-
-
+    private bool canMoveUp = true;  // 控制是否可以继续向上移动
 
     void Update()
     {
@@ -37,13 +37,17 @@ public class controller : MonoBehaviour
 
         // 获取上下箭头键的输入，只影响Y轴
         float rise = 0f;
-        if (Input.GetKey(KeyCode.UpArrow))  // 上箭头上升
+        if (canMoveUp)  // 只有在允许的情况下才能上升
         {
-            rise = verticalSpeed ;
+            if (Input.GetKey(KeyCode.UpArrow))  // 上箭头上升
+            {
+                rise = verticalSpeed;
+            }
         }
-        else if (Input.GetKey(KeyCode.DownArrow))  // 下箭头下降
+
+        if (Input.GetKey(KeyCode.DownArrow))  // 下箭头下降
         {
-            rise = -verticalSpeed ;
+            rise = -verticalSpeed;
         }
 
         // 计算移动向量
@@ -51,7 +55,23 @@ public class controller : MonoBehaviour
 
         // 应用移动
         transform.Translate(movement);
+    }
 
+    // 触发器检测，停止向上移动
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("TestCube"))
+        {
+            canMoveUp = false;  // 碰到 "testitem" 时停止向上移动
+        }
+    }
 
+    // 当物体离开触发器时，允许再次向上移动
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("TestCube"))
+        {
+            canMoveUp = true;  // 离开 "testitem" 时恢复向上移动
+        }
     }
 }
