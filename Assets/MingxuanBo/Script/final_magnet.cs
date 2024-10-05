@@ -13,7 +13,6 @@ public class final_magnet : MonoBehaviour
     private Renderer objectRenderer;
     private Rigidbody objectRigidbody;
 
-
     private Rigidbody attachedRigidbody = null;
     private Transform attachedObject = null;
     private Collider attachedCollider = null;
@@ -58,11 +57,32 @@ public class final_magnet : MonoBehaviour
 
             }
 
+            // 禁用父子物体之间的碰撞
+            Collider parentCollider = GetComponent<Collider>();
+            if (parentCollider != null && attachedCollider != null)
+            {
+                Physics.IgnoreCollision(parentCollider, attachedCollider);
+            }
+
+
             //黏贴完碰撞还是开启下
-            //attachedCollider.enabled = true;  // 禁用碰撞
+            StartCoroutine(EnableColliderAfterDelay(1f));
 
 
 
+
+        }
+    }
+
+
+    private IEnumerator EnableColliderAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // 延迟后重新启用碰撞
+        if (attachedCollider != null)
+        {
+            attachedCollider.enabled = true;
         }
     }
 
@@ -81,6 +101,13 @@ public class final_magnet : MonoBehaviour
     {
         if (attachedObject != null)
         {
+            // 恢复父子物体之间的碰撞
+            Collider parentCollider = GetComponent<Collider>();
+            if (parentCollider != null && attachedCollider != null)
+            {
+                Physics.IgnoreCollision(parentCollider, attachedCollider, false);  // 恢复碰撞
+            }
+
             // 取消吸附
             attachedObject.SetParent(null);
 

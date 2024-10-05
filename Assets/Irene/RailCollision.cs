@@ -9,7 +9,10 @@ public class RailCollision : MonoBehaviour
     public Vector3 cubeStartPosition;
 
     public GameObject ball;
+    public GameObject magnetCollider;
     public GameObject cube;
+
+    public float stopTime = 1.0f;  // Time to stop movement after collision
 
     public void StopMovement(GameObject otherObject)
     {
@@ -23,13 +26,44 @@ public class RailCollision : MonoBehaviour
         }
     }
 
+    IEnumerator OnCollisionEnter()  // Use IEnumerator to allow WaitForSeconds
+    {
+        cube.transform.SetParent(null);  // Unparent the cube from the joint
+
+        transform.position = jointStartPosition;
+        transform.rotation = Quaternion.identity;  // Reset rotation to zero
+        ball.transform.position = ballStartPosition;
+        ball.transform.rotation = Quaternion.identity;  // Reset rotation to zero
+        cube.transform.position = cubeStartPosition;
+        cube.transform.rotation = Quaternion.identity;  // Reset rotation to zero
+
+        // Reset its velocity if it's a Rigidbody
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.constraints = RigidbodyConstraints.FreezeAll;  // Freeze all movement and rotation
+
+            rb.velocity = Vector3.zero;  // Stop all movement
+            rb.angularVelocity = Vector3.zero;  // Stop rotation
+
+            StopMovement(magnetCollider);
+
+            // Wait for the specified stop time
+            yield return new WaitForSeconds(stopTime);
+
+            rb.constraints = RigidbodyConstraints.None;  // Unfreeze all movement and rotation
+        }
+    }
+
+
+    /*
     void OnCollisionEnter(Collision collision)
     {
         cube.transform.SetParent(null);  // Unparent the cube from the joint
 
-        // Reset object back to start position
         transform.position = jointStartPosition;
         ball.transform.position = ballStartPosition;
+        ball.transform.rotation = Quaternion.identity;  // Reset rotation to zero
         cube.transform.position = cubeStartPosition;
         cube.transform.rotation = Quaternion.identity;  // Reset rotation to zero
 
@@ -39,10 +73,19 @@ public class RailCollision : MonoBehaviour
         {
             rb.velocity = Vector3.zero;  // Stop all movement
             rb.angularVelocity = Vector3.zero;  // Stop rotation
+
+            rb.constraints = RigidbodyConstraints.FreezeAll;  // Freeze all movement and rotation
+
+            // Wait for the specified stop time
+            yield return new WaitForSeconds(stopTime);
+
+            rb.constraints = RigidbodyConstraints.None;  // Unfreeze all movement and rotation
         }
 
-        StopMovement(ball);  // Stop movement of the ball
+        
+        StopMovement(magnetCollider);  // Stop movement of the magnet collider
     }
+    */
 
 
 
